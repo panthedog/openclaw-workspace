@@ -1,0 +1,5 @@
+
+# Sensitive files
+sudoers-hardening
+memory/*.md
+*.log
