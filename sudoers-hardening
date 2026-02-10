@@ -1,0 +1,14 @@
+# OpenClaw Hardening - Passwordless Sudo
+# Allows passwordless sudo for apt and hardening commands
+# Save to: /etc/sudoers.d/hardening
+
+# Replace 'rtiodev' with your actual username
+rtiodev ALL=(ALL) NOPASSWD: /usr/bin/apt
+
+# Hardening-specific commands
+username ALL=(ALL) NOPASSWD: \
+    /usr/sbin/ufw default deny incoming, \
+    /usr/sbin/ufw default allow outgoing, \
+    /usr/sbin/ufw allow ssh, \
+    /usr/sbin/ufw --force enable, \
+    /bin/chmod 700 /home/rtiodev/.openclaw/credentials

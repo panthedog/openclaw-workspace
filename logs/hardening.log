@@ -1,0 +1,125 @@
+[2026-02-09 18:54:05] === Starting Hardening ===
+[2026-02-09 18:54:05] [1/4] Installing ufw...
+
+WARNING: apt does not have a stable CLI interface. Use with caution in scripts.
+
+Reading package lists...
+Building dependency tree...
+Reading state information...
+ufw is already the newest version (0.36.2-6).
+The following package was automatically installed and is no longer required:
+  libllvm19
+Use 'sudo apt autoremove' to remove it.
+0 upgraded, 0 newly installed, 0 to remove and 4 not upgraded.
+[2026-02-09 18:54:05] [2/4] Configuring firewall...
+Default incoming policy changed to 'deny'
+(be sure to update your rules accordingly)
+Default outgoing policy changed to 'allow'
+(be sure to update your rules accordingly)
+Skipping adding existing rule
+Skipping adding existing rule (v6)
+Firewall is active and enabled on system startup
+[2026-02-09 18:54:05] [3/4] Fixing OpenClaw credentials permissions...
+[2026-02-09 18:54:05] [4/4] Updating OpenClaw...
+Updating OpenClaw...
+
+
+Update Result: OK
+  Root: /home/rtiodev/.npm-global/lib/node_modules/openclaw
+  Before: 2026.2.9
+  After: 2026.2.9
+
+Steps:
+  ✓ global update (78.32s)
+
+Total time: 78.66s
+
+Updating plugins...
+No plugin updates needed.
+
+Restarting service...
+Restarted systemd service: openclaw-gateway.service
+Daemon restarted successfully.
+
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+██░▄▄▄░██░▄▄░██░▄▄▄██░▀██░██░▄▄▀██░████░▄▄▀██░███░██
+██░███░██░▀▀░██░▄▄▄██░█░█░██░█████░████░▀▀░██░█░█░██
+██░▀▀▀░██░█████░▀▀▀██░██▄░██░▀▀▄██░▀▀░█░██░██▄▀▄▀▄██
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                  🦞 OPENCLAW 🦞                    
+ 
+┌  OpenClaw doctor
+│
+◇  Security ─────────────────────────────────╮
+│                                            │
+│  - No channel security warnings detected.  │
+│  - Run: openclaw security audit --deep     │
+│                                            │
+├────────────────────────────────────────────╯
+│
+◇  Skills status ────────────╮
+│                            │
+│  Eligible: 3               │
+│  Missing requirements: 46  │
+│  Blocked by allowlist: 0   │
+│                            │
+├────────────────────────────╯
+│
+◇  Plugins ──────╮
+│                │
+│  Loaded: 5     │
+│  Disabled: 29  │
+│  Errors: 0     │
+│                │
+├────────────────╯
+│
+◇  Gateway ──────────────╮
+│                        │
+│  Gateway not running.  │
+│                        │
+├────────────────────────╯
+│
+◇  Gateway connection ────────────────────────────╮
+│                                                 │
+│  Gateway target: ws://127.0.0.1:18789           │
+│  Source: local loopback                         │
+│  Config: /home/rtiodev/.openclaw/openclaw.json  │
+│  Bind: loopback                                 │
+│                                                 │
+├─────────────────────────────────────────────────╯
+│
+◇  Gateway ──────────────────────────────────────────────────────────────╮
+│                                                                        │
+│  Runtime: running (pid 34256, state active, sub running, last exit 0,  │
+│  reason 0)                                                             │
+│                                                                        │
+├────────────────────────────────────────────────────────────────────────╯
+[?25l│
+◆  Restart gateway service now?
+│  ● Yes / ○ No
+└
+[999D[4A[1B[J◇  Restart gateway service now?
+│  Yes
+[?25hRestarted systemd service: openclaw-gateway.service
+│
+◇  Gateway ──────────────╮
+│                        │
+│  Gateway not running.  │
+│                        │
+├────────────────────────╯
+│
+◇  Gateway connection ────────────────────────────╮
+│                                                 │
+│  Gateway target: ws://127.0.0.1:18789           │
+│  Source: local loopback                         │
+│  Config: /home/rtiodev/.openclaw/openclaw.json  │
+│  Bind: loopback                                 │
+│                                                 │
+├─────────────────────────────────────────────────╯
+Run "openclaw doctor --fix" to apply changes.
+│
+└  Doctor complete.
+
+Version bump! Same chaos energy, fewer crashes (probably).
+[2026-02-09 18:54:05] === Hardening Complete ===
+[2026-02-09 18:54:05] Log saved to: /home/rtiodev/.openclaw/workspace/logs/hardening.log

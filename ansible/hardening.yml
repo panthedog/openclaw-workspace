@@ -1,0 +1,111 @@
+---
+# Ansible Playbook: Ubuntu Hardening
+# Run: ansible-playbook -i inventory.ini hardening.yml
+
+- name: Harden Ubuntu Server
+  hosts: all
+  become: true
+  vars:
+    ssh_port: 22
+    allow_ssh_from: ["0.0.0.0/0"]  # Adjust to your needs
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+      register: apt_upgrade_result
+
+    - name: Install ufw
+      apt:
+        name: ufw
+        state: present
+
+    - name: Set ufw defaults
+      community.general.ufw:
+        direction: incoming: default
+        policy: deny
+      community.general.ufw:
+        direction: outgoing
+        policy: allow
+
+    - name: Allow SSH port
+      community.general.ufw:
+        rule: allow
+        port: "{{ ssh_port }}"
+        proto: tcp
+
+    - name: Enable ufw
+      community.general.ufw:
+        state: enabled
+
+    - name: Set SSH to reject password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication'
+        line: 'PasswordAuthentication no'
+        state: present
+      notify: Restart ssh
+
+    - name: Set SSH to disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+      notify: Restart ssh
+
+    - name: Set SSH to enable pubkey authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PubkeyAuthentication'
+        line: 'PubkeyAuthentication yes'
+        state: present
+      notify: Restart ssh
+
+    - name: Fix OpenClaw credentials directory permissions
+      file:
+        path: /home/rtiodev/.openclaw/credentials
+        mode: '0700'
+        state: directory
+
+    - name: Install fail2ban (optional but recommended)
+      apt:
+        name: fail2ban
+        state: present
+
+    - name: Enable and start fail2ban
+      systemd:
+        name: fail2ban
+        enabled: yes
+        state: started
+
+    - name: Set automatic security updates
+      apt:
+        name: unattended-upgrades
+        state: present
+
+    - name: Configure unattended-upgrades
+      copy:
+        content: |
+          APT::Periodic::Update-Package-Lists "1";
+          APT::Periodic::Download-Upgradeable-Packages "1";
+          APT::Periodic::AutocleanInterval "7";
+          APT::Periodic::Unattended-Upgrade "1";
+        dest: /etc/apt/apt.conf.d/50unattended-upgrades
+      register: unattended_config
+
+  handlers:
+    - name: Restart ssh
+      service:
+        name: sshd
+        state: restarted
+
+    - name: Restart ufw
+      service:
+        name: ufw
+        state: restarted
