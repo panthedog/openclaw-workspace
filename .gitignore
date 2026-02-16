@@ -1,5 +1,16 @@
 
 # Sensitive files
 sudoers-hardening
-memory/*.md
 *.log
+
+# Memory daily logs (contain session-specific context)
+memory/*.md
+
+# Track heartbeat state (runtime, but useful for continuity)
+!memory/heartbeat-state.json
+
+# Never commit real secrets
+credentials/
+*.key
+*.pem
+.env

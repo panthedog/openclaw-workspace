@@ -1,0 +1,122 @@
+{
+  "meta": {
+    "comment": "OpenClaw config template for Pan — replace YOUR_* placeholders with real values. Keep secrets in ~/.openclaw/credentials/, never in this file."
+  },
+
+  "agents": {
+    "defaults": {
+      "model": {
+        "comment": "Cheap primary model. Expensive models go in agent-specific configs, not here.",
+        "primary": "YOUR_DEFAULT_MODEL",
+        "fallbacks": [
+          "YOUR_FALLBACK_1",
+          "YOUR_FALLBACK_2"
+        ]
+      },
+
+      "workspace": "/home/rtiodev/.openclaw/workspace",
+
+      "memorySearch": {
+        "comment": "Cheap embeddings for memory recall — thousands of searches for ~$0.10",
+        "sources": ["memory", "sessions"],
+        "experimental": {
+          "sessionMemory": true
+        },
+        "provider": "openai",
+        "model": "text-embedding-3-small"
+      },
+
+      "contextPruning": {
+        "comment": "Drop old context after TTL expires. Keeps token usage predictable.",
+        "mode": "cache-ttl",
+        "ttl": "6h",
+        "keepLastAssistants": 3
+      },
+
+      "compaction": {
+        "comment": "When context hits threshold, distill session to daily memory file.",
+        "mode": "default",
+        "memoryFlush": {
+          "enabled": true,
+          "softThresholdTokens": 40000,
+          "prompt": "Extract key decisions, state changes, lessons, blockers to memory/YYYY-MM-DD.md. Format: ## [HH:MM] Topic. Skip routine work. NO_FLUSH if nothing important.",
+          "systemPrompt": "Compacting session context. Extract only what's worth remembering. No fluff."
+        }
+      },
+
+      "heartbeat": {
+        "comment": "Use cheapest available model — heartbeats do simple checks, not reasoning.",
+        "model": "YOUR_CHEAPEST_MODEL"
+      },
+
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      }
+    },
+
+    "list": [
+      {
+        "id": "main",
+        "default": true
+      }
+    ]
+  },
+
+  "logging": {
+    "comment": "Redact API keys and tokens from tool output in logs.",
+    "redactSensitive": "tools"
+  },
+
+  "tools": {
+    "web": {
+      "search": {
+        "enabled": true,
+        "apiKey": "YOUR_SEARCH_API_KEY"
+      },
+      "fetch": {
+        "enabled": true
+      }
+    }
+  },
+
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "botToken": "YOUR_TELEGRAM_BOT_TOKEN",
+      "groupPolicy": "allowlist",
+      "streamMode": "partial"
+    }
+  },
+
+  "gateway": {
+    "comment": "SECURITY: Always bind to loopback. Verify with: netstat -an | grep 18789 | grep LISTEN",
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "YOUR_GATEWAY_AUTH_TOKEN",
+      "allowTailscale": true
+    },
+    "tailscale": {
+      "mode": "serve",
+      "resetOnExit": true
+    }
+  },
+
+  "auth": {
+    "comment": "API auth profiles — tokens stored in ~/.openclaw/credentials/",
+    "profiles": {
+      "openrouter:default": {
+        "provider": "openrouter",
+        "mode": "api_key"
+      },
+      "openai:default": {
+        "provider": "openai",
+        "mode": "api_key"
+      }
+    }
+  }
+}
